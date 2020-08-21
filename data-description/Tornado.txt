@@ -1,0 +1,7 @@
+Name: Tornado
+
+Dimension: (128, 128, 128)
+
+Variable: VM (velocity magnitude)
+
+Description: This data set, courtesy of Roger A. Crawfis at The Ohio State University and Nelson L. Max at the University of California, Davis, comes from a simulation of the vortex core structure of a tornado.

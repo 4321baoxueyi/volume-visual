@@ -1,0 +1,7 @@
+Name: Lobster
+
+Dimension: (301, 324, 56)
+
+Variable: Intensity
+
+Description: This data set, courtesy of the State University of New York at Stony Brook, comes from a CT scan of a lobster immersed in a cylinder of resin, part of the VolVis distribution. 

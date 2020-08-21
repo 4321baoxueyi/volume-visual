@@ -1,0 +1,117 @@
+<html>
+
+<body>
+<nav class="navbar navbar-default navbar-static-top col-lg-10 col-9" id="topNav">
+  <div class="navbar-header">
+    <a class="navbar-brand" id="brand-name" href="https://sites.nd.edu/chaoli-wang" data-step="3" data-intro="Volume Visual"
+       data-position='right' data-scrollTo='tooltip'>
+      Volume<span style="color:#0C2340;">Visual</span>
+    </a>
+  </div>
+</nav>
+
+<div class="container-fluid" id="mainDiv">
+  <div class="row">
+    <!-- aboutDiv -->
+    <div class="col-lg-10 col-9 row my-3" id="aboutDiv">
+      <p>VolumeVisual is an educational tool that provides a friendly web interface for students to explore and interact with volume visualizations of a variety of data sets from real-world medical applications and scientific simulations. As the most popular techniques for volume visualization, direct volume rendering and isosurface rendering are utilized to allow users to draw important information from these data sets. Users learn how to compare and evaluate these two different visualization techniques in side-by-side panels, which can be interactively explored by various interactions.
+              VolumeVisual is mainly developed with WebGL 2.0. To get better browser compatibility and performance, users are strongly recommended to download the latest version of Chrome, FireFox, or Edge and update Graphics Cards driver to the newest version.
+      </p>
+      <div>
+        <p id="motivation" class="h4">Motivation</p>
+        <p>
+          The motivation stems from the significance of direct volume rendering and isosurface rendering techniques in scientific and engineering applications. As two essential visual representation techniques, direct volume rendering and isosurface rendering have been widely used in different disciplines that require visualization of three-dimensional data sets. Many available volume visualization tools such as ParaView <a href="#cit1">[1]</a>, VolView <a href="#cit2">[2]</a>, and ImageVis3D <a href="#cit3">[3]</a> require much knowledge of visualization background and are too complicated for beginners in scientific visualization to use. This is why VolumeVisual is developed that incorporates simplicity, selectivity, interactivity, and efficiency in the design to help students effectively learn volume visualization knowledge.
+        </p>
+      </div>
+      <div>
+        <p id="volume" class="h4">Direct volume rendering</p>
+        <p>
+         Direct volume rendering avoids the binary classification in isosurface rendering by using a GPU-accelerated raycasting method in <a href="#cit4">[4]</a> that includes ray traversal, reconstruction, classification (transfer function lookup), shading, and compositing in the fragment shader. Users can specify the transfer function, and map different value ranges to different colors and opacities. Furthermore, users are also provided with axis-aligned slicing planes to cut out the volume to better observe the inside structure. Users can scale and rotate the volume and examine from different viewpoints. Default lighting and viewing parameters are used to generate desired rendering results so that users can focus on the interaction. Users can also tweak the transfer function editor to get their preferred volume rendering results for each data set.
+        </p>     
+      </div>
+      <div>
+        <p id="isosurface" class="h4">Isosurface rendering</p>
+        <p>
+        Given a volumetric data set, we apply the isosurface similarity map method <a href="#cit5">[5]</a> <a href="#cit6">[6]</a> to identify representative surfaces. These surfaces are extracted using the march cube algorithm <a href="#cit7">[7]</a>. Users can switch between these surfaces with different representative isovalues, which enables users to get a comprehensive understanding of the volumetric data set. The Phong illumination model is used to render the output triangle primitives of isosurfaces. Both direct volume rendering and isosurface rendering share the same color map in the transfer function editor. Users can also use the same axis-aligned slicing planes in volume rendering to cut out the surface along three dimensions. For both methods, users can scale and rotate the volume and examine from different viewpoints. The same default lighting and viewing parameters are used to generate desired rendering results. One goal of VolumeVisual is to enable users to compare side-by-side, both direct volume rendering and isosurface rendering results generated from the same volumetric data set and under the same viewpoint. This would help them better grasp the pros and cons of each method.      
+        </p>	
+      </div>
+      <div>
+        <p id="data" class="h4">Data sets</p>
+        <p>
+        VolumeVisual comes with a set of example data sets from medical applications and scientific simulations. The data set description provides detailed information about each data set.
+        </p>
+      </div>
+      <div>
+        <p id="interactions" class="h4">Interactions</p>
+        <p>VolumeVisual provides essential interaction functions to allow users to scale, rotate, and translate the volume and examine from different viewpoints. Users can use the mouse, touchpad, and keyboard to perform these interactions to get a good view of the volumetric data sets. VolumeVisual also provides sliders to perform the translation and scaling interactions. For direct volume rendering, users can specify the transfer function by mapping different value ranges to different colors and opacities. Users can slice the volume along the X, Y, and Z dimensions to cut out the volume in both views to better observe the inside structure.
+        </p>
+      </div>
+      <div>
+        <p id="team" class="h4">Team</p>
+        <p>We acknowledge the following who have contributed to the design and development of VolumeVisual:</p>
+        <ul>
+          <li>Principal investigator: Chaoli Wang</li>
+          <li>Project lead: Xueyi Bao</li>
+          <li>Project member: Jun Han</li>
+        </ul>
+        <p></p>
+        <ul>
+          
+        </ul>
+      </div>
+     <div>
+      <p id="acknowledgements" class="h4">Acknowledgements</p>
+      <p>This project is supported by the U.S. National Science Foundation under grant DUE-1833129.</p>
+     </div>
+     <div>
+      <p id="references" class="h4">References</p>
+      <p><a id="cit1">[1]</a> https://www.paraview.org/
+      </p>
+      <p><a id="cit2">[2]</a> https://www.kitware.com/volview/
+      </p>
+      <p><a id="cit3">[3]</a> http://www.sci.utah.edu/software/imagevis3d.html
+      </p>
+      <p><a id="cit4">[4]</a> J. H. Kr&uumlger and R. Westermann, "Acceleration Techniques for GPU-based Volume Rendering," Proc. IEEE VIS, pp. 287-292, 2003.
+      </p>
+      <p><a id="cit5">[5]</a> S. Bruckner and T. M&ouml;ller, "Isosurface Similarity Maps," Comput. Graph. Forum, vol. 29, no. 3, pp. 773-782, 2010.
+      </p>
+      <p><a id="cit6">[6]</a> M. Imre, J. Tao, and C. Wang, "Efficient GPU-accelerated Computation of Isosurface Similarity Maps," Proc. IEEE PacificVis, pp. 180-184, 2017.
+      </p>
+      <p><a id="cit7">[7]</a> W. E. Lorensen and H. E. Cline, "Marching Cubes: A High Resolution 3D Surface Construction Algorithm," Proc. ACM SIGGRAPH, pp.163-169, 1987.
+      </p>
+     </div>
+    </div>
+    <!-- end aboutDiv -->
+
+    <!-- sidebar -->
+    <div class="col-lg-2 col-3" style="overflow-y: auto; overflow-x: hidden; padding-left:0px" id="sidebar">
+      <div id="sidebarInsideDiv" class="ml-auto ml-0" style="width: 100%; padding-left:15px;">
+      <form>
+        <h2 id="toolbar-head"
+        style="font-size: 20px; margin-bottom: 20px; width: 100%; padding-bottom: 13px; padding-top: 20px; margin-bottom: -10px; color: #000">
+          <b>Navigation</b>
+          <a id="back" href="javascript:void(0)" onclick="backfromAbout();" class="toolbox-link">back</a>
+        </h2>
+        <hr/>
+        <div id="naviDiv" class="col-md-12">
+            <a href="#motivation"><h2>Motivation</h2></a>
+            <a href="#volume"><h2>Direct volume rendering</h2></a>
+            <a href="#isosurface"><h2>Isosurface rendering</h2></a>
+            <a href="#data"><h2>Data sets</h2></a>
+             <a href="#interactions"><h2>Interactions</h2></a>
+            <a href="#team"><h2>Team</h2></a>
+            <a href="#acknowledgements"><h2>Acknowledgements</h2></a>
+            <a href="#references"><h2>References</h2></a>
+        </div>
+
+      </form>
+      </div>
+    </div><!-- sidebar -->
+
+  </div><!-- row -->
+</div>
+
+</body>
+
+
+</html>

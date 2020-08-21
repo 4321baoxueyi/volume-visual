@@ -1,0 +1,7 @@
+Name: Combustion (HR)
+
+Dimension: (240, 360, 60), downsampled
+
+Variable: HR (heat release)
+
+Description: This data set, courtesy of Jacqueline H. Chen at Sandia National Laboratories, comes from direct numerical simulation of temporally evolving turbulent non-premixed flames. 

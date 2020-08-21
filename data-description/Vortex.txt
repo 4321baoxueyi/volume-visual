@@ -1,0 +1,7 @@
+Name: Vortex
+
+Dimension: (128, 128, 128)
+
+Variable: Vorticity magnitude
+
+Description: This data set, courtesy of Deborah Silver at Rutgers, The State University of New Jersey, comes from a pseudo-spectral simulation of vortex structures.

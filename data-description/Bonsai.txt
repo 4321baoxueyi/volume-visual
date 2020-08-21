@@ -1,0 +1,7 @@
+Name: Bonsai
+
+Dimension: (204, 204, 204), downsampled
+
+Variable: Intensity
+
+Description: This data set, courtesy of S. Roettger, VIS, University of Stuttgart, comes from a CT scan of a bonsai tree.

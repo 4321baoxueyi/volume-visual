@@ -1,0 +1,7 @@
+Name: Hurricane Isabel (WSMAG )
+
+Dimension: (300, 300, 60), downsampled
+
+Variable: WSMAG (wind speed magnitude)
+
+Description: This data set, courtesy of IEEE Visualization 2004 Contest, comes from a simulation of Hurricane Isabel, a strong hurricane in the west Atlantic region in September 2003. 

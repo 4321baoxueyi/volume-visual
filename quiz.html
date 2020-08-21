@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8" />
+     
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"> 
+     <link rel="stylesheet" href="lib/introjs.css">
+     <link rel="stylesheet" href="lib/bootstrap-4.0.0-dist/demo.css">
+     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+        integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> 
+
+     <link rel="stylesheet" href="css/volume-visual.css">  
+     <link rel="stylesheet" href="css/switch.css">
+     <link rel="stylesheet" href="css/tooltip.css">
+     <link rel="stylesheet" href="css/loading.css">
+
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>  
+     <script src="lib/intro.js"></script> 
+   
+
+ <!--    <style>
+      body{
+     display:-webkit-box;
+     display:-webkit-flex;
+     display:-ms-flexbox;
+     display:flex;
+         }
+     svg{ 
+      margin: auto;
+     }
+      #button{
+        cursor: pointer;
+      }
+       
+     .channel canvas {
+       float: right;
+       width: 512px;
+       height: 30px;
+       position: absolute; left:50px;top:750px;
+     }
+     </style>-->
+     
+
+     <script id = "viewPort_vertexShader"type = "x-shader/x-vertex"> #version 300 es
+   
+    precision highp float;
+    layout(location = 0) in vec4 vVertex;
+    void main(){
+                    gl_Position = vVertex;
+               }
+    </script>
+     <script id = "viewPort_fragmentShader"type = "x-shader/x-fragment"> #version 300 es
+  
+      precision highp float;
+      out vec4 fragColor;
+      void main(){ 
+                    gl_FragDepth = 0.0;
+                    fragColor = vec4(0.0,0.0,0.0,0.7);
+                 }
+     </script>
+     <script id = "Axis_vertexShader"type = "x-shader/x-vertex"> #version 300 es
+      
+    precision highp float;
+    layout(location = 0) in vec3 vVertex;
+    layout(location = 1) in vec3 vColor;
+    uniform mat4 ctMatrix;
+    uniform mat4 projMatrix;
+    uniform mat4 viewtransMatrix;
+    uniform mat4 viewMatrix;
+    uniform mat4 transMatrix;
+    uniform int IsOrthogonal;
+    out vec3 vertexColor;
+    void main(){
+                 
+                  vec4 pos = vec4(vVertex,1.0);
+                  vec4 origin;
+                  if(IsOrthogonal == 1){
+                    pos -= vec4(0.2,0.2,0.2,0.0);
+                    origin = vec4(-0.7,-0.7,-0.7,1.0);
+                  }
+                  else{
+                     pos -= vec4(1.0,1.0,1.0,0.0);
+                     origin = vec4(-1.5,-1.5,-1.5,1.0);
+                  }
+          
+                  vertexColor = vColor;
+                 
+                  vec4 transformed_origin = transMatrix * origin;
+                  vec4 tranlation = transformed_origin - origin;
+                  pos = transMatrix * pos;
+                  pos -= tranlation;
+                  
+                  gl_Position = projMatrix* viewMatrix * pos;   
+               
+               }
+    </script>
+    <script id = "Axis_fragmentShader"type = "x-shader/x-fragment"> #version 300 es
+  
+      precision highp float;
+      in vec3 vertexColor;
+      out vec4 fragColor;
+      void main(){ 
+                    fragColor = vec4(vec3(vertexColor),1.0);
+                 }
+     </script>
+    <script id = "boundingBox_vertexShader"type = "x-shader/x-vertex"> #version 300 es
+   
+    precision highp float;
+    layout(location = 0) in vec4 vVertex;
+    uniform mat4 ctMatrix;
+    void main(){
+                  vec4 pos = vVertex;
+                  gl_Position = ctMatrix * pos;
+               }
+    </script>
+     <script id = "boundingBox_fragmentShader"type = "x-shader/x-fragment"> #version 300 es
+  
+      precision highp float;
+      out vec4 fragColor;
+      void main(){ 
+                    fragColor = vec4(0.0,0.0,0.0,1.0);
+                 }
+     </script>
+     <script id = "slice_vertexShader"type = "x-shader/x-vertex"> #version 300 es
+   
+        precision highp float;
+        layout(location = 0) in vec4 vVertex;
+        uniform mat4 ctMatrix;
+        void main(){
+                        vec4 pos = vVertex;
+                         gl_Position = ctMatrix * pos;
+                   }
+    </script>
+     <script id = "slice_fragmentShader"type = "x-shader/x-fragment"> #version 300 es
+  
+      precision highp float;
+      uniform int sliceIndex;
+      out vec4 fragColor;
+      void main(){ 
+                     
+                   if(sliceIndex==0) fragColor = vec4(1.0,0.0,0.0,1.0);
+                   if(sliceIndex==1) fragColor = vec4(0.0,1.0,0.0,1.0);
+                   if(sliceIndex==2) fragColor = vec4(0.0,0.0,1.0,1.0);
+                 }
+     </script>
+
+
+      <script id = "BackFace_VertexShader"type = "x-shader/x-vertex"> #version 300 es
+
+      precision highp float;
+      precision highp int;
+      layout(location = 0) in vec4 vVertex;
+      layout(location = 1) in vec3 texCord;
+      out vec3 texCordforFrag;
+      out float depth;
+   //   uniform mat4 viewMatrix;
+      uniform mat4 ctMatrix;
+      void main(){
+                   vec4 pos = vVertex;
+                   gl_Position = ctMatrix * pos;
+                  // depth = (viewMatrix * pos).z;
+                   texCordforFrag = texCord;
+                  }
+      </script>
+      <script id = "BackFace_FragmentShader" type = "x-shader/x-fragment"> #version 300 es
+
+          precision highp float;
+          in vec3 texCordforFrag;
+          in float depth;
+          out vec4 fragColor;
+          void main(){
+                       fragColor = vec4(texCordforFrag,1.0);
+                     }
+      </script>
+       <script id = "vol_vertexShader"type = "x-shader/x-vertex">  #version 300 es
+       
+         precision highp float;
+         layout(location = 0) in vec4 vVertex;
+         layout(location = 1) in vec3 texCord;
+         out  vec3  texCordforFrag;
+         out  vec4 fragCoord;
+        // uniform mat4 viewMatrix;
+         uniform mat4 ctMatrix;
+        void main(){
+                     vec4 pos = vVertex;
+                     gl_Position = ctMatrix * pos;
+                  //   fragCoord = viewMatrix * pos;
+                     texCordforFrag = texCord;
+                     }
+      </script>
+      <script id = "vol_fragmentShader"type = "x-shader/x-fragment"> #version 300 es
+        
+            precision highp float;
+            precision highp sampler2D;
+            precision highp sampler3D;  
+              
+            uniform sampler2D backFaceTexture;
+            uniform sampler2D depthTexture;
+            uniform sampler3D volumeTexture;  
+            uniform sampler2D transferFunc;   
+            uniform float diffuse_density;   
+            uniform float ambient_density;  
+            uniform float shiness_density;   
+            uniform float specular_density;
+            uniform float constrast_ratio;
+            uniform float refSampleRate;
+            uniform float sampleRate;
+            uniform float volSizeX;
+            uniform float volSizeY;
+            uniform float volSizeZ;
+            uniform float slice_X_min;
+            uniform float slice_Y_min;
+            uniform float slice_Z_min;
+            uniform float slice_X;
+            uniform float slice_Y;
+            uniform float slice_Z;   
+
+            uniform mat4 inverseMVmatrix;
+            uniform mat4 viewMatrix; 
+            uniform mat4 projectMatrix;
+            uniform int  IsOrthogonal;
+
+            in vec3 texCordforFrag;  
+            out vec4 fragColor;
+            in vec4 fragCoord; 
+               
+            vec3 dirtXYZ;  
+ 
+            const float winSize = 512.0;  
+      
+            struct Light{  
+                        float ambient_diffuse;
+                        float specular;
+                        };          
+            vec3 getNormal(vec3 texPosition){
+                     vec3 gradient; 
+                     gradient.x=texture(volumeTexture,texPosition.xyz+vec3(dirtXYZ.x,0,0)).r-texture(volumeTexture,texPosition.xyz+vec3(-dirtXYZ.x,0,0)).r;
+                     gradient.y=texture(volumeTexture,texPosition.xyz+vec3(0,dirtXYZ.y,0)).r-texture(volumeTexture,texPosition.xyz+vec3(0,-dirtXYZ.y,0)).r;
+                     gradient.z=texture(volumeTexture,texPosition.xyz+vec3(0,0,dirtXYZ.z)).r-texture(volumeTexture,texPosition.xyz+vec3(0,0,-dirtXYZ.z)).r;       
+                         return gradient;
+             }
+            Light getLight(vec3 normal, vec3 lightDir, vec3 rayDir){
+                      Light light; 
+                      float magnitude;
+                      if(length(normal) > 0.0){
+                          magnitude = length(normal) * length(normal);
+                          magnitude = pow(2.0,magnitude);
+                          magnitude = 1.0;
+                          normal = normalize(normal);
+                        
+                      }
+                      float ambient = ambient_density *1.0;      
+                      float diffuse =  max(dot(lightDir, normal), dot(lightDir, -normal)) * diffuse_density * magnitude;
+                      vec3 H = normalize(-rayDir + lightDir); 
+                      float DotHV = max(dot(H, normal), dot(H, -normal));
+                   //   DotHV = max(DotHV,max(dot(-H,normal),dot(-H,-normal)));
+                      float specular = 0.0;
+                      
+                      if ( DotHV > 0.0 )specular = 1.0 * specular_density * pow(DotHV,shiness_density) * magnitude; 
+                      light.ambient_diffuse = ambient + diffuse; 
+                      light.specular = specular;
+                      float alphaOffset = 1.0 * constrast_ratio;
+                      if(constrast_ratio>0.0){
+                          light.ambient_diffuse = light.ambient_diffuse * smoothstep(0.0 ,alphaOffset,light.ambient_diffuse); 
+                          light.specular = light.specular * smoothstep(0.0 ,alphaOffset,light.specular); 
+                      }
+                      return light;
+              }
+            void main(){
+                         vec2 fragCord = gl_FragCoord.xy - 0.5;
+                         fragCord.xy = fragCord.xy/winSize;
+              
+                         vec4 color = texture(backFaceTexture, fragCord);
+                                        
+                         vec3 entryTex = color.xyz;
+                         vec3 exitTex = texCordforFrag;
+                         
+                         float enterDepth;
+                         float exitDepth;
+                         
+                         vec4 lightPos = vec4(0.0,0.0,0.0,1.0);
+
+                         vec3 start = entryTex;
+
+                         vec3 eye_Tex;
+                         vec3 rayStart,rayDir,lightDir,normal;
+                         
+                         float maxVolSize = volSizeX>volSizeY?volSizeX:volSizeY;
+                         maxVolSize = maxVolSize>volSizeZ?maxVolSize:volSizeZ;                           
+                        
+                         float ratioX = maxVolSize/volSizeX;
+                         float ratioY = maxVolSize/volSizeY;
+                         float ratioZ = maxVolSize/volSizeZ;
+
+                         dirtXYZ = vec3(1.5/volSizeX,1.5/volSizeY,1.5/volSizeZ);
+                         // convert eyePosition into texture space
+                         if(IsOrthogonal == 1){ 
+                            rayDir = normalize(vec3(0,0,-1.0));
+                            rayDir =(inverseMVmatrix * vec4(rayDir,0.0)).xyz;     
+                            eye_Tex = texCordforFrag - rayDir;
+                         }
+                         else {
+                             vec4 eye_Pos = vec4(0.0,0.0,0.0,1.0);
+                             vec3 rev_eyePos = (inverseMVmatrix * eye_Pos).xyz;  
+                             rev_eyePos.x =  rev_eyePos.x * ratioX;
+                             rev_eyePos.y =  rev_eyePos.y * ratioY;
+                             rev_eyePos.z =  rev_eyePos.z * ratioZ;
+                             rev_eyePos = rev_eyePos  + vec3(0.5 * ratioX,0.5 * ratioY,0.5 * ratioZ);
+                             eye_Tex = rev_eyePos; 
+                             rayDir = texCordforFrag - rev_eyePos;
+                             normalize(rayDir);
+                         }
+
+                         
+                      //point light
+                     /*  vec3 rev_lightPos = (inverseMVmatrix * lightPos).xyz;
+                         rev_lightPos.x =  rev_lightPos.x * ratioX;
+                         rev_lightPos.y =  rev_lightPos.y * ratioY;
+                         rev_lightPos.z =  rev_lightPos.z * ratioZ;
+                         rev_lightPos = rev_lightPos  + vec3(0.5 * ratioX,0.5 * ratioY,0.5 * ratioZ);*/
+                         
+                         if(color.a!=1.0)entryTex = eye_Tex;
+                                                                   
+                         float sampleNum = sampleRate/refSampleRate;
+
+                         vec3 dirt_tex = (exitTex- entryTex)/sampleNum;
+                 
+                         vec4 accumulated_color = vec4(0.0,0.0,0.0,0.0);
+                         vec4 transferColor =  vec4(0.0,0.0,0.0,0.0);
+
+                         vec3 LightDir[4];
+                         LightDir[0] = normalize(vec3(1.0,1.0,1.0));
+                         LightDir[1] = normalize(vec3(1.0,0.0,0.0));
+                         LightDir[2] = normalize(vec3(0.0,1.0,0.0));
+                         LightDir[3] = normalize(vec3(0.0,0.0,1.0));
+
+                         vec4 eye_lightPos =  lightPos;
+                         lightDir = normalize(vec3(1.0,1.0,1.0));
+                       
+                          //lightDir = normalize(eye_lightPos.xyz - fragCoord.xyz);
+
+                         float ambient_diffuse,specular;
+                         Light light,oneLight;
+    
+                         float step =0.0;
+                         float dirtstep = 1.0;
+
+                         float depth = texture(depthTexture, fragCord).r;
+  
+                         if(color.a == 1.0)enterDepth = depth; 
+                                
+                         exitDepth =  gl_FragCoord.z;
+                         // For perspective projection, convert depth into linearized z in order to interpolate
+                         float A = projectMatrix[2][2];
+                         float B = projectMatrix[3][2];
+                         float ndc_exitDepth = exitDepth * 2.0 - 1.0;
+                         float ndc_enterDepth = enterDepth * 2.0 - 1.0;
+
+                         float eye_exit =  B / (A + ndc_exitDepth); 
+                         float eye_enter =  B / (A + ndc_enterDepth); 
+                         float dirt_eyeZ = (eye_exit - eye_enter)/sampleNum;
+                         float cur_eyeZ = eye_enter;
+                         float total_eyeZ = 0.0;
+
+                         float dirtDepth = (exitDepth - enterDepth)/sampleNum;
+                         float totalDepth = 0.0;
+                         float depth_num = 0.0;
+                         
+                          float markDepth;
+                        
+                           // accumulate color along view direction
+                         while(step<sampleNum&&accumulated_color.a<1.0){
+                                
+                                 start = entryTex+ (dirt_tex*step);
+                                 
+                                 if(start.x<=slice_X_min||start.x>=slice_X){
+                                         step+=dirtstep;
+                                         enterDepth += dirtDepth;   
+                                         cur_eyeZ += dirt_eyeZ;  
+                                          continue;
+                                  }
+                                 if(start.y<=slice_Y_min||start.y>=slice_Y){
+                                         step+=dirtstep;
+                                         enterDepth += dirtDepth;
+                                         cur_eyeZ += dirt_eyeZ;
+                                          continue;
+                                   }
+                                  if(start.z<=slice_Z_min||start.z>=slice_Z){
+                                       step+=dirtstep;
+                                       enterDepth += dirtDepth;
+                                       cur_eyeZ += dirt_eyeZ;    
+                                          continue;
+                                   }
+ 
+                                totalDepth += enterDepth;
+                                total_eyeZ += cur_eyeZ;
+                                depth_num +=1.0;               
+                                normal = getNormal(start);
+                                if(length(normal) == 0.0){
+                                    step+=dirtstep;
+                                    enterDepth += dirtDepth;
+                                    continue;
+                                }
+                                //lightDir = normalize(rev_lightPos - start);
+                                light = getLight(normal,lightDir,rayDir);
+                                specular = 0.0;
+                                ambient_diffuse = 0.0;
+                                for(int i = 0;i<1;i++){
+                                   oneLight = getLight(normal,LightDir[i],rayDir);
+                                   ambient_diffuse +=oneLight.ambient_diffuse;
+                                   specular += oneLight.specular;
+                                 }
+                                ambient_diffuse = light.ambient_diffuse;
+                                //specular = light.specular;
+                                vec4 sliceColor = texture(volumeTexture,start);
+                                transferColor = texture(transferFunc,vec2(sliceColor.r,0.0)); 
+                                float alphaOffset = 0.05 * constrast_ratio;
+                                if(constrast_ratio>0.0)transferColor.a = transferColor.a * smoothstep(0.0 ,alphaOffset,transferColor.a);  
+                                transferColor.rgb = transferColor.rgb * ambient_diffuse + transferColor.a * specular;
+                                accumulated_color.xyz = accumulated_color.xyz + (1.0 -accumulated_color.a ) * transferColor.xyz;
+                                accumulated_color.a = accumulated_color.a+  (1.0 -accumulated_color.a ) *transferColor.a;
+                                step+=dirtstep;
+                                enterDepth += dirtDepth; 
+                                cur_eyeZ += dirt_eyeZ; 
+                            }
+                           float average_eye_Z = 0.0;                         
+                           if(depth_num > 0.0) {
+                               markDepth = totalDepth/depth_num;
+                               average_eye_Z = total_eyeZ/depth_num;
+                               // convert linearized z to unlinearized depth 
+                               if(IsOrthogonal == 0)markDepth = ((B/average_eye_Z - A) + 1.0) * 0.5;   
+                                    
+                           }
+                           if(color.a==1.0) gl_FragDepth = markDepth;
+                           else gl_FragDepth = exitDepth;
+
+                            fragColor =  min(accumulated_color, vec4(1.0)); 
+                          
+                        //    if(entryTex.x==(1.0-slice_X)) fragColor = vec4(1.0,0.0,0.0,1.0);
+                         //   fragColor = vec4(vec3(depth),1.0);
+                                        
+                      // fragColor = vec4(vec3(pow(depth,0.5)), 1.0);
+                      // fragColor = vec4(exitTex,1.0);
+                      }
+     </script>
+      <script id = "surface_VertexShader"type = "x-shader/x-vertex"> #version 300 es
+
+         precision highp float;
+         layout(location = 0) in vec3 vVertex;
+         layout(location = 1) in vec3 normals;
+         out vec3  normals_out;
+         out vec4 vertices_out;
+        // uniform mat4 viewMatrix;
+         uniform mat4 ctMatrix;
+         uniform mat4 m_inc;
+        void main(){
+                     vec4 pos = vec4(vVertex,1.0);    
+                     gl_Position = ctMatrix * pos;   
+                     normals_out = (m_inc *  vec4(normals,0.0)).xyz;
+                     vertices_out = m_inc * vec4(vVertex,1.0);
+                    }
+      </script>
+      <script id = "surface_FragmentShader" type = "x-shader/x-fragment"> #version 300 es
+
+            precision highp float; 
+               
+            uniform float volSizeX;
+            uniform float volSizeY;
+            uniform float volSizeZ;   
+            uniform float diffuse_density;   
+            uniform float ambient_density;  
+            uniform float shiness_density;   
+            uniform float specular_density;
+            uniform float opacity_density;
+            uniform float constrast_ratio;
+            uniform vec3  diffuse_color;        
+            uniform float slice_X;
+            uniform float slice_Y;
+            uniform float slice_Z;  
+            uniform float slice_X_min;
+            uniform float slice_Y_min;
+            uniform float slice_Z_min;
+            uniform mat4 scale_Matrix; 
+            uniform mat4 ctMatrix;
+            uniform mat4 viewMatrix;
+            uniform mat4 inverseMVmatrix;
+            uniform int  IsOrthogonal;
+            uniform float surfaceID;
+            uniform float isoValue;
+            uniform sampler2D transferFunc;
+
+            const vec3 ambient_color = vec3(0.1,0.1,0.1);
+            uniform mat4 m_inc;
+
+            in vec3 normals_out;
+            in vec4 vertices_out;  
+    
+            out vec4 fragColor;
+
+            const float surfaceNum = 8.0;   
+            const vec4 lightPos = vec4(1.0,1.0,1.0,1.0);       
+            vec3 lightDirection = vec3(0.5,0.5,0.5);
+            
+             
+            vec4 getLight(vec3 normal, vec3 lightDir, vec3 rayDir){
+                      float alphaOffset = 1.0 * constrast_ratio; 
+                      vec3 ambient = ambient_density *ambient_color;      
+                      float DIF =  max(dot(lightDir, normal), dot(lightDir, -normal)); 
+                      if(constrast_ratio > 0.0)DIF = DIF * smoothstep(0.0 ,alphaOffset,DIF);
+                    //  float uc = surfaceID/surfaceNum;
+                      vec3 diffuse = texture(transferFunc,vec2(isoValue,0.0)).rgb;
+                      diffuse = DIF * diffuse_density * diffuse;
+                      vec3 H = normalize(-rayDir + lightDir); 
+                      float DotHV = max(dot(H, normal), dot(H, -normal));
+                      float specular = 0.0;
+                      if ( DotHV > 0.0 )specular = 1.0 * specular_density * pow(DotHV,shiness_density);
+                      vec3 specular_color = vec3(specular,specular,specular); 
+                      vec3 ambient_diffuse = ambient + diffuse;
+                     
+                      if(constrast_ratio > 0.0)specular_color = specular_color * smoothstep(0.0 ,alphaOffset,specular);
+                      ambient_diffuse+= specular_color;
+                      return vec4(ambient_diffuse,1.0);
+              }
+            void main(){   
+                float maxVolSize = volSizeX>volSizeY?volSizeX:volSizeY;
+                maxVolSize = maxVolSize>volSizeZ?maxVolSize:volSizeZ; 
+                float ratioX = maxVolSize/volSizeX;
+                float ratioY = maxVolSize/volSizeY;
+                float ratioZ = maxVolSize/volSizeZ;
+
+                    
+                vec4 fragPos = inverseMVmatrix * vertices_out;  
+                fragPos.x =  fragPos.x * ratioX;
+                fragPos.y =  fragPos.y * ratioY;
+                fragPos.z =  fragPos.z * ratioZ;
+                fragPos.xyz = fragPos.xyz  + vec3(0.5 * ratioX,0.5 * ratioY,0.5 * ratioZ);
+                if(fragPos.x>=slice_X||fragPos.x<=slice_X_min)discard;
+                if(fragPos.y>=slice_Y||fragPos.y<=slice_Y_min)discard;
+                if(fragPos.z>=slice_Z||fragPos.z<=slice_Z_min)discard;    
+                                                          
+                  
+                vec3 rayDir;
+                vec3 eye_normal = normalize(normals_out);
+                lightDirection = normalize(lightDirection);
+                if(IsOrthogonal==1)rayDir = vec3(0,0,-1);
+                else rayDir = normalize(vec3(vertices_out.x,vertices_out.y,vertices_out.z));  
+                
+                fragColor = getLight(eye_normal,lightDirection,rayDir);
+                fragColor.a = opacity_density;  
+             // fragColor =  vec4(vec3(normals_out),1.0);
+            //  fragColor= vec4(1.0,0.0,0.0,1.0);   
+             }
+      </script>
+       <script id = "test_VertexShader"type = "x-shader/x-vertex"> #version 300 es
+
+      precision highp float;
+      precision highp int;
+      layout(location = 0) in vec4 vVertex;
+    
+      uniform mat4 ctMatrix;
+      mat4 rotationX( in float angle ) {
+	    return mat4(	1.0,		0,			0,			0,
+			 		0, 	cos(angle),	-sin(angle),		0,
+					0, 	sin(angle),	 cos(angle),		0,
+					0, 			0,			  0, 		1);
+      }
+
+      mat4 rotationY( in float angle ) {
+	       return mat4(	cos(angle),		0,		sin(angle),	0,
+			 				0,		1.0,			 0,	0,
+					       -sin(angle),	0,		cos(angle),	0,
+							0, 		0,				0,	1);
+       }
+
+      mat4 rotationZ( in float angle ) {
+	           return mat4(	cos(angle),		-sin(angle),	0,	0,
+			 		      sin(angle),		cos(angle),		0,	0,
+							0,				0,		1,	0,
+							0,				0,		0,	1);
+        }
+      mat4 translate( in float tx, in float ty, in float tz ) {
+	           return mat4(	1,		0,	    0,	0,
+			 		        0,		1,		0,	0,
+							0,	    0,		1,	0,
+							tx,	    ty,		tz,	1);
+        }
+      mat4 transform(vec3 v1, vec3 v2){
+           vec3 direction = normalize(v2 - v1);
+           mat4 tMatrix = translate(v1.x,v1.y,v1.z);
+           float V = sqrt(direction.y * direction.y + direction.z * direction.z);
+           mat4 rotYMatrix = mat4(	V,		0,		A,	0,
+			 				        0,	  1.0,	    0,	0,
+					                -A,	    0,		V,	0,
+					                0       0,      1,  0);
+            
+		   mat4 rotXMatrix  = mat4(1.0,		0,			0,			0,
+			 		                 0, 	direction.z/V,	B/V,    0,
+					                 0, 	B/V,	 direction.z/V,	0,
+					                 0,     0,			  0, 		1);     
+		   return (tMatrix*rotYMatrix * rotXMatrix);
+
+      }  
+      void main(){
+                   vec4 pos = vVertex;
+                   vec3 st = vec3(0,0,0);
+                   vec3 et = vec3(-0.5,-0.5,-0.5);
+                   mat transMatrix = 
+                   vec3 dirtion = normalize(st - et);
+                   mat4 transMatrix = transform(et,st);
+                   gl_Position = ctMatrix * transMatrix * pos;
+                  
+                  }
+      </script>
+      <script id = "test_FragmentShader" type = "x-shader/x-fragment"> #version 300 es
+
+          precision highp float;
+          out vec4 fragColor;
+          void main(){
+                       fragColor = vec4(1.0,0.0,0.0,1.0);
+                     }
+      </script>
+    <title>VolumeVisual</title>
+
+</head>
+<!-- <body> onload="main()"> -->
+   <body id = "the-body">
+
+    <div id="textWidthDiv"></div>
+    <div class="loading-wrapper" style="display: none">
+       <div class="loading-cover"></div>
+          <div style="color: #a09de5" class="loading la-ball-clip-rotate la-3x">
+            <div></div>
+          </div>
+    </div>
+    <div class="container-fluid" id="mainDiv"> 
+      <div class="row" style="margin-left:-50px">
+        <nav class="navbar navbar-default navbar-static-top col-lg-10 col-9" id="topNav"> 
+            <div class="navbar-header">
+            <!-- Branding Image -->
+             <a class="navbar-brand" id="brand-name" href="https://sites.nd.edu/chaoli-wang" data-step="3" data-intro="VolumeVisual"
+             data-position='right' data-scrollTo='tooltip'>
+             Volume<span style="color:#0C2340;">Visual</span>
+            </a>
+           </div>
+       <!-- bottom tooltip goes here -->
+          <div style = "float: right; padding-left:100px;" id = "volumeTip"> 
+          </div>
+    
+
+       </nav> 
+      </div> <!-- end row -->
+  
+     
+        <div class="row" style="padding-top:15px; padding-left:0px">
+           <div class ="col-lg-4 col-1" id = "ViewSwitcherDiv" >
+               <div class="form-group" id="viewSwitcher">
+                       <div class="form-row">
+                         <div class="col-5">               
+                              Direct volume rendering
+                         </div>
+                         <div class="col-2">
+                             <label class="switch ">
+                                 <input type="checkbox" id="view_switcher" onclick="changeView()">
+                                 <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="col-5">               
+                              Isosurface rendering
+                        </div>
+                      </div><!-- end form row -->
+                 </div><!-- end viewSwitcher -->   
+           </div><!-- end ViewSwitcherDiv -->
+          </div><!-- end row --> 
+      
+            <div class="col-lg-10 col-10 row " id="volumeDiv">    <!-- volumeDiv -->
+
+               <div class = "col-lg-6 col-md-12 " id = "volumeContainer"><!-- volume with widgets>-->
+
+                   <div class="row" id="volumeDiv1"> <!-- volume view -->
+                      <div class="col-lg-11 col-11" id="volumeInsideDiv1">
+                           <div class = "container" id = "overlap"style= "position:relative;height=512px" >
+                           <div class="spinner-border" id = "volume_spinner" style="position: absolute;z-index:999"></div> 
+                           <div class="spinner-border" id = "surface_spinner" style="position: absolute;z-index:-999"></div> 
+                            <canvas id="webgl_volume" width="512" height="512" style = "position: absolute;width: 100%;height: auto;z-index:1" oncontextmenu="return false;" ></canvas>
+                            <canvas id="webgl_surface" width="512" height="512"  style = "position: absolute;width: 100%;height: auto; z-index:-1" ></canvas>
+                            <canvas width ="512" height="550" id="canvas_shadow" style = "width: 100%;position: relative;height: auto; z-index:-999" > </svg>
+                           </div> 
+                      </div><!-- col-md-11 -->
+                   </div><!-- volumeDiv1 -->
+                   <div id="transferDiv1" class="form-group row">
+                         <div class = "container-fluid">
+                             <div class = "row justify-content-center">
+                                <div class = "col-sm-10 mr-5" id = "OpacityContainer" style="margin-left:-50px">
+                                  <svg width = "512" height="150" id="svg3" viewBox="0 0 512 150" style = "width: 105%;position: absolute;top:10px;height: auto; z-index:1" > </svg>  
+                                  <canvas  id = "opacity_canvas"  width ="512" height="150" style = "position: absolute;width: 105%;top:10px;height: auto; z-index:-1"></canvas>
+                                </div> 
+                                <div class = "col-sm-10 mr-5" style="margin-left:-50px">
+                                    <svg width ="512" height="180" id="svg_shadow" viewBox="0 0 512 180" style = "width: 100%;position: relative;height: auto; z-index:-999" > </svg> 
+                                </div> 
+                             </div>
+                         </div>    
+                         <div class = "container-fluid">       
+                             <div class = "row justify-content-center">
+                                <div class = "col-sm-10 mr-5" id = "ColorContainer" style="margin-left:-50px">
+                                  <canvas width="512" height="30" id = "channel_canvas" style = "position: absolute;width: 104%;top:0px;height: auto; z-index:-1" > </canvas>
+                                  <svg width="512" height="30" id ="svg1" viewBox="0 0 512 30" style ="width: 104%;position: absolute;top:0px;height: auto; z-index:1" > </svg>
+                                </div>                                 
+                             </div>         
+                        </div>    
+                    </div><!-- end form-->                 
+               </div><!-- end volume with widgets -->
+
+               <div class = "col-lg-6 col-md-12 " id="questionInsideDiv"><!-- question with widgets --> 
+
+                     <div class ="row" id = "questionSection"> <!-- question section -->
+                        <div class="col-lg-11 col-12">
+                           <div class="container" style="padding-top: 0px; padding-left:50px;">
+                               <div id = "questionId" style="display: none"></div>
+                               <p id="questions-counter"></p>
+                               <div class = "row">
+                                  <div class="col-md-12" id="questions" style="font-family: arial;">
+                                   question is loading...
+                                  </div><!-- col-md-6 -->
+                               </div><!-- row -->
+                               <div class = "row">
+                                  <div class= "col-md-4" id = "referenceImage"> <!-- question image-->
+                                        <div class="spinner-border" id = "image1_spinner" style="position: absolute"></div> 
+                                        <canvas width="512" height="512" id = "image_canvas" style = "width: 100%;height: auto" > </canvas>
+                                  </div>
+                                   <div class= "col-md-4" id = "referenceImage2"> <!-- question image--> 
+                                         <div class="spinner-border" id = "image2_spinner" style="position: absolute"></div>     
+                                         <canvas width="512" height="512" id = "image_canvas2" style = "width: 100%;height: auto" > </canvas>
+                                  </div><!-- end image-->
+                               </div><!-- row -->
+                              
+                                 <div class="col-md-12 mt-5 d-flex justify-content-center" id="buttons" style="font-family: arial;">
+                                    <div class = "col-md-8" id = "SaveButton">
+                                      <button type="button" class="btn btn-success float-right" id="bSave"
+                                        aria-disabled="true">Save
+                                     </button>
+                                    </div>
+                                    <div class = "col-md-5"id = "NextButton">
+                                        <button type="button" class="btn btn-primary float-right" id="bNext" aria-disabled="true">Next
+                                        </button>
+                                        <button type="button" class="btn btn-success float-right" id="bSubmit"
+                                        aria-disabled="true">Submit
+                                        </button>
+                                    </div>
+                                 </div>
+                              
+                             </div><!--end container-->
+                       </div><!-- col-lg-11 -->
+                     </div><!-- end question section -->
+
+                  <!-- surface widgets  -->
+                    <div class = "container-fluid"id = "widgetDiv2">
+                        <div class = "row">
+                           <div class="col-sm-10" id = "color_picker_container">
+                               <svg width ="512" height="200" viewBox="0 0 512 200"id="color_panel" style ="width: 100%;height: auto" > </svg>  
+                           </div>
+                        </div>
+                    </div><!-- end surface widgets -->
+
+                </div><!-- end surface with widgets -->    
+
+           </div><!-- end volumeDiv --> 
+      
+    
+    <!-- sidebar -->
+     <div class="col-lg-2 col-3" style="overflow-y: auto; overflow-x: hidden; padding-left:0px" id="sidebar">
+        <div id="sidebarInsideDiv" class="ml-auto ml-0" style="width: 100%; padding-left:15px">
+            <form>
+             <h2 id="toolbar-head" style="font-size: 20px; padding-top: 20px; padding-bottom: -10px; color: #000">
+             <b>Control Panel</b>
+           <!--  <a id="about" href="javascript:void(0);" onclick="gotoAbout();" class="toolbox-link">about</a> -->
+         <!--    <a id="help" href="javascript:void(0);" onclick = "helpOnClick();" class="toolbox-link" style="margin-right: 10px;">help?</a>-->
+            </h2>
+        <!-- end head -->
+            <hr id="hr">     
+
+        <!-- sidebar body -->
+        <div class="col-md-12" id="sidebarIntroDiv">
+           <div id="sidebarIntro">
+                 <div id="accordion" class="panel-group">
+                    <div id="cuttingPlanePanel" class="panel panel-default">
+                         <div class="panel-heading" data-toggle="collapse" data-target="#cuttingPlaneDiv" data-parent="#accordion">
+                         <h2 class="panel-title" id = "Cutting Plane">Cutting Plane</h2>
+                         <hr/>
+                         </div>
+                   <div id="cuttingPlaneDiv" class="collapse panel-collapse panel-body">
+                  <!-- Node Degree -->
+                <div class="form-group mt-3 mb-1" id="SliceX">
+                  <label>X (max)</label>
+                  <div class="form-row">
+                    <div class="col-2">
+                      0.0
+                    </div>
+                    <div class="col" >
+                      <input type="range" data-toggle="tooltip" class="form-control-range" id="slider_sliceX" min="0" max="1.0" step="0.1" value = "1.0">   
+                      <div class="sliderValue"></div> 
+                    </div>
+                    <div class="col-2">
+                      1.0
+                    </div>
+                  </div><!-- form-row -->
+                </div><!-- end SliceX -->
+                <div class="form-group mt-3 mb-1" id="SliceX_min">
+                  <label>X (min)</label>
+                  <div class="form-row">
+                    <div class="col-2">
+                      0.0
+                    </div>
+                    <div class="col">
+                      <input type="range" data-toggle="tooltip" class="form-control-range" id="slider_sliceX_min" min="0" max="1.0" step="0.1"value = "0.0">
+                      <div class="sliderValue"></div>
+                    </div>
+                    <div class="col-2">
+                      1.0
+                    </div>
+                  </div><!-- form-row -->
+                </div><!-- end SliceX_min -->
+                <div class="form-group mt-3 mb-1" id="SliceY">
+                  <lable>Y (max)</lable>
+                  <div class="form-row">
+                    <div class="col-2">
+                      0.0
+                    </div>
+                    <div class="col">
+                      <input type="range" data-toggle="tooltip" class="form-control-range" id="slider_sliceY" min="0" max="1.0" step="0.1"value = "1.0">
+                      <div class="sliderValue"></div>
+                    </div>
+                    <div class="col-2">
+                      1.0
+                    </div>
+                  </div><!-- form-row -->
+                </div><!-- end SliceY -->
+                 <div class="form-group mt-3 mb-1" id="SliceY_min">
+                  <label>Y (min)</label>
+                  <div class="form-row">
+                    <div class="col-2">
+                      0.0
+                    </div>
+                    <div class="col">
+                      <input type="range" data-toggle="tooltip" class="form-control-range" id="slider_sliceY_min" min="0" max="1.0" step="0.1"value = "0.0">
+                      <div class="sliderValue"></div>
+                    </div>
+                    <div class="col-2">
+                      1.0
+                    </div>
+                  </div><!-- form-row -->
+                </div><!-- end SliceY_min -->
+                <div class="form-group mt-3 mb-1" id="SliceZ">
+                  <label>Z (max)</label>
+                  <div class="form-row">
+                    <div class="col-2">
+                      0.0
+                    </div>
+                    <div class="col">
+                      <input type="range" data-toggle="tooltip" class="form-control-range" id="slider_sliceZ" min="0" max="1.0" step="0.1"value = "1.0">
+                      <div class="sliderValue"></div>
+                    </div>
+                    <div class="col-2">
+                      1.0
+                    </div>
+                  </div><!-- form-row -->
+                </div><!-- end SliceZ -->  
+                <div class="form-group mt-3 mb-1" id="SliceZ_min">
+                  <label>Z (min)</label>
+                  <div class="form-row">
+                    <div class="col-2">
+                      0.0
+                    </div>
+                    <div class="col">
+                      <input type="range" data-toggle="tooltip" class="form-control-range" id="slider_sliceZ_min" min="0" max="1.0" step="0.1"value = "0.0">
+                      <div class="sliderValue"></div>
+                    </div>
+                    <div class="col-2">
+                      1.0
+                    </div>
+                  </div><!-- form-row -->
+                </div><!-- end SliceZ_min -->
+               </div> <!-- end cuttingPlaneDiv -->
+              </div> <!-- end cuttingPlanePanel  -->
+                <div id="lightintParaPanel" class="panel panel-default">
+                         <div class="panel-heading" data-toggle="collapse" data-target="#lightingParaDiv" data-parent="#accordion">
+                         <h2 class="panel-title" id = "LightingPara">Lighting Parameters</h2>
+                         <hr/>
+                         </div>
+                   <div id="lightingParaDiv" class="collapse panel-collapse panel-body show">
+                          <div class="form-group mt-3 mb-1" id="Ambient">
+                             <span>Ambient</span>
+                             <div class="form-row">
+                             <div class="col-2">
+                                 0.0
+                             </div>
+                             <div class="col">
+                                 <input type="range" data-toggle="tooltip" class="form-control-range" id="slider_ambient" min="0" max="1.0" step="0.1"value = "0.0">
+                                 <div class="sliderValue"></div>
+                            </div>
+                             <div class="col-2">
+                                 1.0
+                             </div>
+                             </div><!-- form-row -->
+                             </div><!-- end Ambient -->
+                             <div class="form-group mt-3 mb-1" id="Diffuse">
+                             <span>Diffuse</span>
+                             <div class="form-row">
+                             <div class="col-2">
+                                 0.0
+                             </div>
+                             <div class="col">
+                                 <input type="range" data-toggle="tooltip" class="form-control-range" id="slider_diffuse" min="0" max="1.0" step="0.1"value = "0.0">
+                                 <div class="sliderValue"></div>
+                            </div>
+                             <div class="col-2">
+                                 1.0
+                             </div>
+                             </div><!-- form-row -->
+                             </div><!-- end Diffuse -->
+                             <div class="form-group mt-3 mb-1" id="Specular">
+                             <span>Specular</span>
+                             <div class="form-row">
+                              <div class="col-2">
+                                 0.0
+                             </div>
+                             <div class="col">
+                                <input type="range" data-toggle="tooltip" class="form-control-range" id="slider_specular" min="0" max="1.0" step="0.1"value = "0.0">
+                                <div class="sliderValue"></div>
+                             </div>
+                             <div class="col-2">
+                                 1.0
+                             </div>
+                             </div><!-- form-row -->
+                            </div><!-- end Specular -->
+                            <div class="form-group mt-3 mb-1" id="Shiness">
+                             <span>Shininess</span>
+                            <div class="form-row">
+                             <div class="col-2">
+                                  2.0
+                             </div>
+                              <div class="col">
+                                <input type="range" data-toggle="tooltip" class="form-control-range" id="slider_shiness" min="2.0" max="128.0" step="2.0" value="2.0">
+                                <div class="sliderValue"></div>
+                             </div>
+                            <div class="col-2">
+                                 128.0
+                            </div>
+                            </div><!-- form-row -->
+                            </div><!-- end Shiness -->
+                          
+                            <div class="form-group mt-3 mb-1" id="Contrast">
+                             <span>Contrast</span>
+                            <div class="form-row">
+                            <div class="col-2">
+                                     0.0
+                             </div>
+                             <div class="col">
+                                 <input type="range" data-toggle="tooltip" class="form-control-range" id="slider_contrast"  min="0.0" max="1.0" step="0.1" value="0.0">
+                                 <div class="sliderValue"></div>
+                            </div>
+                            <div class="col-2">
+                                    1.0
+                            </div>
+                           </div><!-- form-row -->
+                           </div><!-- Contrast -->
+                          </div><!--  end lightingParaDiv  --> 
+                         </div><!-- end lightingPanel  -->
+                         <div id="transViewPanel" class="panel panel-default">
+                         <div class="panel-heading" data-toggle="collapse" data-target="#transViewDiv" data-parent="#accordion">
+                         <h2 class="panel-title" id = "ViewingPara">Viewing Parameters</h2>
+                         <hr/>
+                         </div>
+                   <div id="transViewDiv" class="collapse panel-collapse panel-body">
+                         <div class="form-group mt-3 mb-1" id="translateX">
+                            <span>Translate X (A & D)</span>
+                                <div class="form-row">
+                                <div class="col-2">
+                                 -0.5
+                                </div>
+                                <div class="col">
+                            <input type="range" data-toggle="tooltip" class="form-control-range" id="slider_translateX" min="-0.5" max="0.5" step="0.05"value = "0.0">
+                            <div class="sliderValue"></div>
+                        </div>
+                              <div class="col-2">
+                                 0.5
+                                </div>
+                             </div><!-- form-row -->
+                             </div><!-- end translateX -->
+                             <div class="form-group mt-3 mb-1" id="translateY">
+                             <span>Translate Y (W & S)</span>
+                             <div class="form-row">
+                             <div class="col-2">
+                                 -0.5
+                             </div>
+                             <div class="col">
+                                 <input type="range" data-toggle="tooltip" class="form-control-range" id="slider_translateY" min="-0.5" max="0.5" step="0.05"value = "0.0">
+                                 <div class="sliderValue"></div>
+                            </div>
+                             <div class="col-2">
+                                 0.5
+                             </div>
+                             </div><!-- form-row -->
+                             </div><!-- end translateY -->
+                             <div class="form-group mt-3 mb-1" id="scale">
+                             <span>Scale</span>
+                             <div class="form-row">
+                              <div class="col-2">
+                                 0.5
+                             </div>
+                             <div class="col">
+                                <input type="range" data-toggle="tooltip" class="form-control-range" id="slider_scale" min="0.5" max="5.0" step="0.3"value = "1.0">
+                                <div class="sliderValue"></div>
+                             </div>
+                             <div class="col-2">
+                                 5.0
+                             </div>
+                             </div><!-- form-row -->
+                            </div><!-- end Scale -->
+                          </div><!--  end transViewDiv  --> 
+                         </div><!-- end transViewPanel  -->
+                         <div id="sampleRatePanel" class="panel panel-default">
+                         <div class="panel-heading" data-toggle="collapse" data-target="#sampleRateDiv" data-parent="#accordion">   
+                            <h2 class="panel-title">Volume Rendering</h2>
+                          <hr/>
+                         </div>
+                       <div id="sampleRateDiv" class="collapse panel-collapse panel-body">   
+                         <div class="form-group mt-3 mb-1" id="SamplingRate">
+                            <span>Sampling Rate</span>
+                            <div class="form-row">
+                             <div class="col-2">
+                                     1.0
+                            </div>
+                             <div class="col">
+                                    <input type="range" data-toggle="tooltip" class="form-control-range" id="slider_sampleRate"  min="1.0" max="5.0" step="0.5" value="1.0">
+                                    <div class="sliderValue"></div>
+                             </div>
+                             <div class="col-2">
+                                     5.0
+                            </div>
+                            </div><!-- form-row -->
+                            </div><!-- end Sampling Rate -->   
+                          </div><!--  end transViewDiv  --> 
+                          </div><!-- end transViewPanel  -->
+                         <div id="isoValuePanel" class="panel panel-default">
+                         <div class="panel-heading" data-toggle="collapse" data-target="#isoValueDiv" data-parent="#accordion">  
+                             <h2 class="panel-title">Isosurface Rendering</h2>   
+                             <hr/>
+                         </div>   
+                         <div id="isoValueDiv" class="collapse panel-collapse panel-body">  
+                            <div class="form-group mt-3 mb-1" id="isovalue">
+                                 <span id = "surfaceIndex">Isovalue</span>
+                                 <div class="form-row">
+                                    <div class="col-8 ml-4">
+                                      <input type="range" data-toggle="tooltip" class="form-control-range" id="slider_surface" style = "position:relative; left:5px" min="0.0" max="7.0" step="1.0" value="0.0">  
+                                   </div>
+                                 </div><!-- form-row -->
+                            </div><!-- end isovalue -->   
+                         </div><!--  end isoValueDiv  --> 
+                         </div><!-- end isoValuePanel  -->
+                        </div><!-- end accordin -->   
+                    <div class="form-group mt-3 mb-1" id="Orthogonal">  
+                            <div class="form-row">
+                             <div class="col-8">
+                                     Orthogonal
+                            </div>
+                             <div class="col">
+                                    <input id="item1" type="radio" name="Orthogonal_item" value="Orthogonal">
+                             </div>
+                            </div><!-- form-row -->
+                     </div><!-- end Orthogonal -->
+                      <div class="form-group mt-3 mb-1" id="Prospective">
+                            <div class="form-row">
+                             <div class="col-8">
+                                     Perspective
+                            </div>
+                             <div class="col">
+                                    <input id="item2" type="radio" name="Orthogonal_item" value="Prospective" checked = "checked">
+                             </div>
+                            </div><!-- form-row -->
+                     </div><!-- end Orthogonal -->
+                     <div class="form-group mt-3 mb-1" id="Axis">
+                       <div class="form-row">
+                         <div class="col-7">               
+                              Axis
+                         </div>
+                         <div class="col-4">
+                             <label class="switch">
+                                 <input type="checkbox" id="show_Axis">
+                                 <span class="slider round"></span>
+                            </label>
+                        </div>
+                      </div><!-- end form row -->
+                    </div><!-- end Axis -->
+                       <!-- button: Animate -->
+                  <button class="btn btn-xs btn-primary" type="button" onclick="resetPreferredSetting()" id="Reset">
+                    Reset All <i class="fas fa-redo"></i>
+                  </button> 
+                    </div>    <!-- end sidebarIntro -->
+                 </div>  <!-- sidebarIntroDiv-->
+                 <div class="form-group p-3 my-3 border" id="describeDiv">
+                    <div id="describeDivIntro" style="margin: 2px">
+                        <b>Name:</b>
+                        </br>
+                        <span id="dataInfoName"></span>
+                        <br/>
+                        <br/>
+                        <b>Dimension:</b>
+                        </br>
+                        <span id="dataInfoDim"></span>
+                        <br/>
+                        <br/>
+                        <b>Variable:</b>
+                        </br>
+                        <div id="dataInfoVariable"></div>
+                        <br/>
+                        <b>Data Description:</b> 
+                        </br>
+                        <span id="dataDescription"></span> 
+                   </div>
+                </div>
+                 
+         </form>
+        </div>
+     </div>  
+    </div><!-- end mainDiv -->   
+      
+
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="js/onboarding.js"></script> 
+    <script src="js/initShaders.js"></script>
+    <script src="js/shader.js"></script>
+    <script src="js/Math3D.js"></script>
+    <script src="js/cuon-matrix.js"></script>
+    <script src="js/MV.js"></script>
+    <script src="js/trackball.js"></script>
+    <script src="js/webgl-setup.js"></script>
+    <script src="js/color-picker.js"></script>
+    <script src="js/main.js"></script> 
+    <script src="js/about.js"></script>
+
+    <script src="js/quiz/quiz-data.js"></script>
+    <script src="js/quiz/communication.js"></script>
+    <script src="js/quiz/quiz.js"></script>
+     
+</body>
+</html>

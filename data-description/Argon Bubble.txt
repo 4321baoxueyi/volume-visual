@@ -1,0 +1,7 @@
+Name: Argon Bubble
+
+Dimension: (320, 128, 128), downsampled
+
+Variable: Density
+
+Description: This data set, courtesy of Lawrence Berkeley National Laboratory, comes from a simulation that models shock refraction and mixing. 

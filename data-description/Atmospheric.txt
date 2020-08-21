@@ -1,0 +1,7 @@
+Name: Atmospheric (E1U)
+
+Dimension: (288, 288, 89), downsampled
+
+Variable: E1U (east wind, 1m/s, U component)
+
+Description: This data set, courtesy of G&ouml;khan Sever at Argonne National Laboratory, comes from a simulation that models the mechanical impacts of Graciosa Island on the dry boundary layer evaluation under varying wind speed and surface friction setups. 

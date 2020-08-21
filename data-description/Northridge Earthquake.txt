@@ -1,0 +1,7 @@
+Name: Northridge Earthquake
+
+Dimension: (256, 256, 96)
+
+Variable: Amplitude
+
+Description: This data set, courtesy of Carnegie Mellon University, comes from a simulation of the 1994 Northridge earthquake. 

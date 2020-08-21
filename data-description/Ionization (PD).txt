@@ -1,0 +1,7 @@
+Name: Ionization (PD)
+
+Dimension: (300, 124, 124), downsampled
+
+Variable: PD (total particle density)
+
+Description: This data set, courtesy of IEEE Visualization 2008 Contest, comes from a simulation that performs 3D radiation hydrodynamical calculations of ionization front instabilities for studying a variety of phenomena in interstellar medium such as the formation of stars.

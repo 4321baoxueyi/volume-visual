@@ -1,0 +1,7 @@
+Name: Solar Plume
+
+Dimension: (128, 128, 512), downsampled
+
+Variable: VM (velocity magnitude)
+
+Description: This data set, courtesy of John Clyne at the National Center for Atmospheric Research, comes from a simulation that aims to study the role of the solar plume plays in the transport of the heat, momentum, and magnetic field in the sun. 

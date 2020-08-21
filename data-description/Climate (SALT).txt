@@ -1,0 +1,7 @@
+Name: Climate (SALT)
+
+Dimension: (360, 66, 27)
+
+Variable: SALT (salinity)
+
+Description: This data set, courtesy of Andrew T. Wittenberg at the National Oceanic and Atmospheric Administration, comes from a simulation that models the monthly salinity of the equatorial upper ocean over 120 years. 

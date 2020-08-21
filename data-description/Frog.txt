@@ -1,0 +1,7 @@
+Name: Frog
+
+Dimension: (300, 282, 81), downsampled
+
+Variable: Intensity
+
+Description: This data set, courtesy of Oliver Kreylos at the University of California, Davis, comes from a MRI scan of a frog, completed at Lawrence Berkeley National Laboratory.

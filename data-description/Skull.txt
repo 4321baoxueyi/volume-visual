@@ -1,0 +1,7 @@
+Name: Skull
+
+Dimension: (204, 204, 204), downsampled
+
+Variable: Intensity
+
+Description: This data set, courtesy of Siemens Medical Solutions, Forchheim, Germany, comes from a rotational C-arm x-ray scan of phantom of a human skull.

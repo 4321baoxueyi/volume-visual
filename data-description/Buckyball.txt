@@ -1,0 +1,7 @@
+Name: Buckyball
+
+Dimension: (128, 128, 128)
+
+Variable: ED (electron density)
+
+Description: This data set, courtesy of Oliver Kreylos at the University of California, Davis, comes from a simulation of the electron density inside a C60 Buckminsterfullerene. It is created by summing up 60 scaled 3D Gauss functions, centered at the theoretical atom positions of a real buckyball.

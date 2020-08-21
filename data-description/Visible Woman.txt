@@ -1,0 +1,7 @@
+Name: Visible Woman
+
+Dimension: (128, 128, 432), downsampled
+
+Variable: Intensity
+
+Description: This data set, courtesy of the National Library of Medicine, comes from a CT scan of the entire body of a woman. 

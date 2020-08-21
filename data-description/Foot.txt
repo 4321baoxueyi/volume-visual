@@ -1,0 +1,7 @@
+Name: Foot
+
+Dimension: (125, 255, 183)
+
+Variable: Intensity
+
+Description: This data set, courtesy of Oliver Kreylos at the University of California, Davis, comes from a CT scan of a human foot, part of the Visible Human Project.

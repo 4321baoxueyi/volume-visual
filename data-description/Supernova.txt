@@ -1,0 +1,7 @@
+Name: Supernova
+
+Dimension: (204, 204, 204), downsampled
+
+Variable: Entropy
+
+Description: This data set, courtesy of John M. Blondin at North Carolina State University and Anthony Mezzacappa at Oak Ridge National Laboratory, comes from a simulation of the dynamics of exploding stars. 

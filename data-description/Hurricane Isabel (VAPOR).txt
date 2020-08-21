@@ -1,0 +1,7 @@
+Name: Hurricane Isabel (QVAPOR )
+
+Dimension: (300, 300, 60), downsampled
+
+Variable: QVAPOR (water vapor mixing ratio)
+
+Description: This data set, courtesy of IEEE Visualization 2004 Contest, comes from a simulation of Hurricane Isabel, a strong hurricane in the west Atlantic region in September 2003. 

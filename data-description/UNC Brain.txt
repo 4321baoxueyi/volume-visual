@@ -1,0 +1,7 @@
+Name: UNC Brain
+
+Dimension: (128, 128, 72)
+
+Variable: Intensity
+
+Description: This data set comes from a CT scan of a human head. 
