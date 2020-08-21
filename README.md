@@ -16,6 +16,6 @@ The folder 'transfunc' contains parameter-related information including data set
 ### Adding a Dataset
 To add new data sets, one needs to put data of required format into the corresponding folder:
 1. Volume data set under 'volume/', the raw data has to be stored in float32 format. 
-2. Isosurface data under 'surface'/, stored as '.indices', '.vertices', and '.normals' separately.
+2. Isosurface data under 'surface/', stored as '.indices', '.vertices', and '.normals' separately.
 3. One '.txt' file under 'transferfunc/' containing 9 float numbers: x, y, z dimensions of the data set, 4 quaternion numbers, and two translation numbers (x and y) defining a default view for each data set.
 4. One '.txt' description file of the data set under 'data-description/'.
