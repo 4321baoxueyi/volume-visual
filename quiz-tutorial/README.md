@@ -68,7 +68,7 @@ answer: DVR shows clear inner structure of the volume data ...
 
 ### Volume
 
-When including a volume data set in a quiz question, up to nine parameters can be included:
+When including a volume data set in a quiz question, up to 10 parameters can be included:
 
 * `resource` denotes the name of the data set to be loaded.
 * `type` denotes the type of the data set related question. If it is a `text`, `radio`, `checkbox`, or `parameters` question. Question with type `parameters` requires users to 
