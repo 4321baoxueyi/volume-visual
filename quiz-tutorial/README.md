@@ -71,7 +71,7 @@ answer: DVR shows clear inner structure of the volume data ...
 When including a volume data set in a quiz question, up to nine parameters can be included:
 
 * `resource` denotes the name of the data set to be loaded.
-* `type` denotes the type of the data set related question. If it is a `text`, `radio`, `checkbox`, or `parameters` question. Question with type `parameter` requires users to 
+* `type` denotes the type of the data set related question. If it is a `text`, `radio`, `checkbox`, or `parameters` question. Question with type `parameters` requires users to 
 tweak light, view parameters, or transfer function editor.
 * `light` `true` denotes light parameters could not be modified by users, default light parameters will be loaded.
 * `view` `true` denotes view parameters could not be modified by users, default view parameters will be loaded.
