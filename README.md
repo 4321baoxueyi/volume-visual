@@ -19,3 +19,5 @@ To add new data sets, one needs to put data of required format into the correspo
 2. Isosurface data under 'surface/', stored as '.indices', '.vertices', and '.normals' separately.
 3. One '.txt' file under 'transferfunc/' containing 9 float numbers: x, y, z dimensions of the data set, 4 quaternion numbers, and two translation numbers (x and y) defining a default view for each data set.
 4. One '.txt' description file of the data set under 'data-description/'.
+## Quiz Component
+The quiz component can be used to test the user's general knowledge about volume visualization techniques and their ability to efficiently use #VolumeVisual to explore data.
