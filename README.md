@@ -24,4 +24,25 @@ The quiz component can be used to test the user's general knowledge about volume
 There are two general types of questions: data set related question and data set unrelated question. 
 For more information about the question format and how to add them, check the README in the 'quiz-tutorial' folder.
 ### Quiz image
-The 'quiz-image' folder contains the reference image used by quiz questions. For further details, please check 
+The 'quiz-image' folder contains the reference image used by quiz questions. For further details, please check README in the 'quiz-tutorial' folder.
+### Running the quiz
+To run the quiz, one simply needs to execute 'server/server.py'.
+This will host a web server that can communicate to the quiz front end.
+A temporary Http and Https URL will be given each time running the server.py and will be displayed on the command line. Every user could get access to the quiz page using the URL on the internet with no restriction.
+To access the quiz, go to the URL followed by /quiz.
+During start-up, it compiles the quiz from the question files into a json file that is served to the user.
+The server stores the results in similar json files, one for each user.
+This is done by creating a folder for each user under 'server/db/'.
+To allow users to log in for the quiz, an '_auth.json' file needs to exists which looks like this:
+
+```
+{
+  "username": "<username>",
+  "password": "<password>",
+  "authd": true
+}
+
+```
+**Note:** we do not claim that this is a secure/preferred way to store login credentials, this method was just used as a quick and dirty solution for our research study.
+
+This repository contains an example quiz with three questions and an example user.
