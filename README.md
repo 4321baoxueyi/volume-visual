@@ -46,3 +46,17 @@ To allow users to log in for the quiz, an '_auth.json' file needs to exists whic
 **Note:** we do not claim that this is a secure/preferred way to store login credentials, this method was just used as a quick and dirty solution for our research study.
 
 This repository contains an example quiz with three questions and an example user.
+
+## Contributors
+<sub><sup>_Sorted by join date, alphabetically to break ties_</sup></sub>
+
+
+* Alexander Mascoli ~ _09/2018-12/2018_
+* Ahmed Farag ~ _02/2019-05/2019_
+* Kekoa Wong ~ _02/2019-05/2019_
+* Kyle Weingartner ~ _04/2019-10/2019_
+* Shuzhan Wang ~  _07/2019-08/2019_
+* Wenqing Chang ~ _07/2019-08/2019_
+* __Project lead__: Martin Imre
+* __Advisor__: Chaoli Wang
+
