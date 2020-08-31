@@ -48,8 +48,10 @@ To allow users to log in for the quiz, an '_auth.json' file needs to exists whic
 This repository contains an example quiz with three questions and an example user.
 
 ## Contributors
+<sub><sup>_Sorted by join date</sup></sub>
 
 * Jun Han ~ _08/2019-01/2020_
+* Martin Imre ~  _12/2019-06/2020_
 * __Project lead__: Xueyi Bao
 * __Advisor__: Chaoli Wang
 
