@@ -23,3 +23,5 @@ To add new data sets, one needs to put data of required format into the correspo
 The quiz component can be used to test the user's general knowledge about volume visualization techniques and their ability to efficiently use **VolumeVisual** to explore data.
 There are two general types of questions: data set related question and data set unrelated question. 
 For more information about the question format and how to add them, check the README in the 'quiz-tutorial' folder.
+### Quiz image
+The 'quiz-image' folder contains the reference image used by quiz questions. For further details, please check 
