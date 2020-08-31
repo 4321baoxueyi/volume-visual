@@ -1,0 +1,41 @@
+
+# This file shows how to write various types of quiz questions.
+# Consult README.md for more information.
+
+# Each file contains one question normally -- however, here we put the
+# questions into a single array, so in this file there is an extra level of
+# indentation and a hyphen at the beginning of each question that wouldn't
+# normally be in a question file
+
+# 1.yaml
+- question: "Which process is not included in direct volume rendering?"
+  # for this single-choice question, the user can choose exactly one option
+  type: radio
+  choices:
+    - surface geometry extraction
+    - ray traversal
+    - transfer function lookup
+    - shading
+  answer: surface geometry extraction
+
+# 2.yaml
+- question: Which information could not be read from direct volume rendering of the tornado data set?
+  # this question is a multi-choice question using the Tornado data set. The default lighting and view parameters will be loaded as the `light` and `view` parameters are all `true`.
+  type: checkbox
+  choices:
+    - velocity magnitude
+    - velocity direction
+    - vorticity
+    - critical point
+  resource: Tornado
+  light: true
+  view: true
+  answer: velocity direction, vorticity, critical point
+
+# 3.yaml
+- question: Given the two direct volume rendering images below, Which one has a better transfer function applied? Please state at least two reasons.
+  # this question is a text question using the Foot data set, the `image` is set to `true` as the reference image is stated in the question.
+    type: text
+    image: true
+    resource: Foot
+    answer: <Reference Answer>
