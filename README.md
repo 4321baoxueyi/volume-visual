@@ -20,4 +20,6 @@ To add new data sets, one needs to put data of required format into the correspo
 3. One '.txt' file under 'transferfunc/' containing 9 float numbers: x, y, z dimensions of the data set, 4 quaternion numbers, and two translation numbers (x and y) defining a default view for each data set.
 4. One '.txt' description file of the data set under 'data-description/'.
 ## Quiz Component
-The quiz component can be used to test the user's general knowledge about volume visualization techniques and their ability to efficiently use #VolumeVisual to explore data.
+The quiz component can be used to test the user's general knowledge about volume visualization techniques and their ability to efficiently use **VolumeVisual** to explore data.
+There are two general types of questions: data set related question and data set unrelated question. 
+For more information about the question format and how to add them, check the README in the 'quiz-tutorial' folder.
