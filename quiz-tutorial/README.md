@@ -73,13 +73,13 @@ When including a volume data set in a quiz question, up to nine parameters can b
 * `resource` denotes the name of the data set to be loaded.
 * `type` denotes the type of the data set related question. If it is a `text`, `radio`, `checkbox`, or `parameters` question. Question with type `parameters` requires users to 
 tweak light, view parameters, or transfer function editor.
-* `light` `true` denotes light parameters could not be modified by users, default light parameters will be loaded.
-* `view` `true` denotes view parameters could not be modified by users, default view parameters will be loaded.
-* `color` `true` denotes color transfer function editor could be modified by users, default color transfer function editor will not be loaded.
-* `opacity` `true` denotes opacity transfer function editor could be modified by users, the default opacity transfer function editor will not be loaded.
-* `surface` `true` denotes only one isovalue is provided in this question. This type of question usually requires users to generate similar direct volume rendering to the isosurface rendering results.
-* `isovalue`: This is a float number denoting the specific isovalue for the isosurface rendering. This parameter is used in companion with the `surface` parameter.
-* `image` `true` denotes reference image is needed for the question. The reference image should be put under the `quiz-image` folder.
+* `light` is `true` when light parameters could not be modified by users, default light parameters will be loaded.
+* `view` is `true` when view parameters could not be modified by users, default view parameters will be loaded.
+* `color` is `true` when color transfer function editor could be modified by users, default color transfer function editor will not be loaded.
+* `opacity` is `true` when opacity transfer function editor could be modified by users, the default opacity transfer function editor will not be loaded.
+* `surface` is `true` when only one isovalue is provided in this question. This type of question usually requires users to generate similar direct volume rendering to the isosurface rendering results.
+* `isovalue`: is a float number denoting the specific isovalue for the isosurface rendering. This parameter is used in companion with the `surface` parameter.
+* `image` is `true` when reference image is needed for the question. The reference image should be put under the `quiz-image` folder.
 
 Note that if there is no explicit definition of one parameter, the quiz component will automatically set the parameter to `false`.
 
