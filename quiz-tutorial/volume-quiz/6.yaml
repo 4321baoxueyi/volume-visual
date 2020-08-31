@@ -1,0 +1,7 @@
+question: The basin is already shown in the rendering. Use the opacity transfer function editor to show the leaves and branches of the bonsai. You must click 'Save' before moving to next question.
+type: parameters
+light: true
+opacity: true
+resource: Bonsai
+view: true
+answer: <Reference Answer>

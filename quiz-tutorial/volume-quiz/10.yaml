@@ -1,0 +1,6 @@
+question: Adjust the lighting parameters and sampling rate to generate a rendering similar to the image below.
+type: parameters
+image: true
+resource: Five Jets
+view: true
+answer: <Reference Answer>

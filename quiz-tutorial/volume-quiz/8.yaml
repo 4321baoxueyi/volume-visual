@@ -1,0 +1,6 @@
+ question: The rendering of the brain is upside down and too small. Adjust the viewing parameters to correct these. Use the color transfer function editor to choose nature colors for skin and brain.
+ type: parameters
+ resource: UNC Brain
+ color: true
+ light: true
+ answer: <Reference Answer>

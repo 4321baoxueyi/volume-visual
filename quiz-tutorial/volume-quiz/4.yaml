@@ -1,0 +1,6 @@
+question: Turn on the axis (red, green, and blue represent X, Y, and Z axis). Assuming X and Y represent East and North in the data set. Which two wind directions does this data set illustrate?
+type: text
+resource: Atmospheric
+view: true
+light: true
+answer: <Reference Answer>
