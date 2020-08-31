@@ -1,0 +1,8 @@
+question: Which operations will likely increase the computation cost of direct volume rendering?
+type: checkbox
+choices:
+  - increase the sampling rate
+  - zoom in the volume rendering
+  - increase the specular term from 0.5 to 1.0
+  - change perspective projection to orthogonal projection
+answer: increase the sampling rate, zoom in the volume rendering

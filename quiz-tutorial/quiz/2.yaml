@@ -1,0 +1,8 @@
+question: Assume the resolution of volume is 128 in each dimension. The sampling rate is one voxel wide during the raycasting process. How many samples at most are taken along one ray?
+type: radio
+choices:
+  - 128
+  - 128 sqrt(2)
+  - 128 sqrt(3)
+  - 256
+answer: 128 sqrt(3)
