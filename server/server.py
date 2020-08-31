@@ -92,7 +92,10 @@ def about():
 
 @app.route('/')
 def root():
-    return send_from_directory('../', 'index.html')
+    if current_user.is_authenticated:
+        return send_from_directory('../', 'start.html')
+    else:
+        return redirect(url_for('login_handler'))
 
 
 @app.route('/quiz')
