@@ -50,13 +50,7 @@ This repository contains an example quiz with three questions and an example use
 ## Contributors
 <sub><sup>_Sorted by join date, alphabetically to break ties_</sup></sub>
 
-
-* Alexander Mascoli ~ _09/2018-12/2018_
-* Ahmed Farag ~ _02/2019-05/2019_
-* Kekoa Wong ~ _02/2019-05/2019_
-* Kyle Weingartner ~ _04/2019-10/2019_
-* Shuzhan Wang ~  _07/2019-08/2019_
-* Wenqing Chang ~ _07/2019-08/2019_
-* __Project lead__: Martin Imre
+* Jun Han ~ _08/2019-01/2020_
+* __Project lead__: Xueyi Bao
 * __Advisor__: Chaoli Wang
 
