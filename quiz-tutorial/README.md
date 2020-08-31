@@ -28,10 +28,9 @@ Options:
 
 - `radio` denotes a multiple-choice question with exactly one answer.
 Set the `answer` field to the value of the correct choice.
-
 Example:
 ```
-Assume the resolution of volume is 128 in each dimension. The sampling rate is one voxel wide during the raycasting process. How many samples at most are taken along one ray?
+question: Assume the resolution of volume is 128 in each dimension. The sampling rate is one voxel wide during the raycasting process. How many samples at most are taken along one ray?
 type: radio
 choices:
   - 128
@@ -40,12 +39,12 @@ choices:
   - 256
 answer: 128 sqrt(3)
 ```
-- `multi` denotes a "select all choices that apply" question.
-Here, the `answer` field is an array.
 
+- `checkbox` denotes a "select all choices that apply" question.
+Here, the `answer` field is an array.
 Example:
 ```
-Which operations will likely increase the computation cost of direct volume rendering?
+question: Which operations will likely increase the computation cost of direct volume rendering?
 type: checkbox
 choices:
   - increase the sampling rate
@@ -56,77 +55,71 @@ answer:
   - increase the sampling rate
   - zoom in the volume rendering
 ```
-- `text` denotes a free-response question.
 
+- `text` denotes a free-response question.
 Example:
 ```
-Comparing direct volume rendering and isosurface rendering, point out their respective pros and cons.
+question: Comparing direct volume rendering and isosurface rendering, point out their respective pros and cons.
 type:text
 
 answer: DVR shows clear inner structure of the volume data ...
 ```
-Here the `answer` key only gives a reference answer to be shown in the report.
-It is not used by VolumeVisual directly.
+- Here the `answer` key only gives a reference answer, which is not used by VolumeVisual directly.
 
-### Graph
+### Volume
 
-When including a graph in a quiz question,
-two parameters can be included:
+When including a volume data set in a quiz question, up to nine parameters can be included:
 
-* `resource` denotes the name of the graph resource to be loaded.
-* `layouts` is an array that denotes the allowable graph layouts.
+* `resource` denotes the name of the data set to be loaded.
+* `type` denotes the type of the data set related question. If it is a `text`, `radio`, `checkbox`, or `parameters` question. Question with type `parameter` requires users to 
+tweak light, view parameters, or transfer function editor.
+* `light` `true` denotes light parameters could not be modified by users, default light parameters will be loaded.
+* `view` `true` denotes view parameters could not be modified by users, default view parameters will be loaded.
+* `color` `true` denotes color transfer function editor could be modified by users, default color transfer function editor will not be loaded.
+* `opacity` `true` denotes opacity transfer function editor could be modified by users, the default opacity transfer function editor will not be loaded.
+* `surface` `true` denotes only one isovalue is provided in this question. This type of question usually requires users to generate similar direct volume rendering to the isosurface rendering results.
+* `isovalue`: This is a float number denoting the specific isovalue for the isosurface rendering. This parameter is used in companion with the `surface` parameter.
+* `image` `true` denotes reference image is needed for the question. The reference image should be put under the `quiz-image` folder.
 
-
-#### Layouts
-There are several layouts, however often it might be useful to reduce the number of possible layouts to just a few.
-To do so, one can specify which layouts are allowed for this graph.
-If this parameter is not present, all layouts are allowed.
+Note that if there is no explicit definition of one parameter, the quiz component will automatically set the parameter to `false`.
 
 ### Example
 Below are three full examples.
 
 ```
+question: The basin is already shown in the rendering. Use the opacity transfer function editor to show the leaves and branches of the bonsai. You must click 'Save' before moving to next question.
+type: parameters
+light: true
+opacity: true
+resource: Bonsai
+view: true
 answer: <Reference Answer>
-graph:
-  layouts:
-  - openord
-  - yifan hu
-  resource: Les Miserables
-question: <Question>
+
+```
+This first example is a question using the Bonsai dataset and requiring users to tweak the opacity transfer function editor.
+
+```
+question: Turn on the axis (red, green, and blue represent X, Y, and Z axis). Assuming X and Y represent East and North in the data set. Which two wind directions does this data set illustrate?
 type: text
+resource: Atmospheric
+view: true
+light: true
+answer: <Reference Answer>
+```
+This second example is a text question that uses the Atmospheric data set.
 
 ```
-This first example is an open text question using the Les Miserables dataset and allowing only the OpenOrd and Yifan Hu layout.
-
+question: Adjust the opacity transfer function editor to generate a direct volume rendering result similar to the corresponding isosurface rendering result.
+type: parameters
+resource: Combustion (OH)
+light: true
+isovalue: 140.9
+view: true
+surface: true
+opacity: true
+answer: <Reference Answer>
 ```
-answer: z
-choices:
-- a
-- z
-- kqa
-- a2
-graph:
-  resource: Cat Brain
-question: <Question>
-type: single
-```
-This second example is a single choice question that uses the Cat Brain graph and allows all layouts.
-Some dummy values show that the choices can be in any order and the answer should have one of those values (and not the id).
-
-```
-answer:
-- ABC
-- XYZ
-choices:
-- ABC
-- DEF
-- QPR
-- XYZ
-question: <Question>
-type: multi
-```
-This last example is a multiple choice question that does not use a graph.
-The correct answers are specified similar to the ones in single choice questions.
+This last example is a `parameters` question using Combustion (OH) data set, which defines the `isovalue` and the `surface` parameter together.
 
 For more examples, see 'tutorial.yaml'.
 
@@ -135,6 +128,4 @@ For more examples, see 'tutorial.yaml'.
 
 The quiz is automatically compiled when the server is started.
 
-There is also a script 'questionParser.py' in the 'questions' folder that takes a tab-separated file as input and generates the YAML files.
-This is just a convenience tool and is not further documented.
 
