@@ -215,7 +215,7 @@ surface_slider.oninput = function(){
             var buffer = data.split(/[\s\n]/);
             var num = parseInt(buffer[0]);
             surface_slider.max = num - 1;
-            var k = 2;
+            var k = 1;
             for(var i = 0;i<num;i++){   
                var surfaceId = parseInt(buffer[k++]);
                var temp = parseFloat(buffer[k++]);
@@ -226,7 +226,7 @@ surface_slider.oninput = function(){
                    (document.getElementById('slider_surface')).title = isoValue;
                    surfaceIndex.innerHTML = "Isovalue" + " (" + (currentSurfaceID + 1) + "/" + num + ")";
                }
-                k++;
+                
             }
           
         }              
@@ -396,13 +396,13 @@ function LoadVolumeData()
             colorNodes_file.splice(0,colorNodes_file.length);
             var buffer = data.split(/[\s\n]/);
             var num = parseInt(buffer[0]);
-            var k = 2;
+            var k = 1;
             for(var i = 0;i<num;i++){
                 var node = {cx:parseInt(buffer[k++]),
                  color:d3.rgb(parseFloat(buffer[k++]),parseFloat(buffer[k++]),parseFloat(buffer[k++]))
                 }; 
                 colorNodes_file.push(node);
-                k++;
+                
             } 
             resetPreferredSetting();
         }
@@ -416,14 +416,14 @@ function LoadVolumeData()
             opacityNodes_file.splice(0,opacityNodes_file.length);
             var buffer = data.split(/[\s\n]/);
             var num = parseInt(buffer[0]);
-            var k = 2;
+            var k = 1;
             for(var i = 0;i<num;i++){
                 var node = 
                 {  opacity: parseFloat(buffer[k++]),
                    cx:  parseFloat(buffer[k++]),
                    cy:  parseFloat(buffer[k++])
                 };
-                k++
+             
                 opacityNodes_file.push(node);
             } 
              resetPreferredSetting();
